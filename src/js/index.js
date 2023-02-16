@@ -6,6 +6,8 @@ function App() {
     e.preventDefault();
   });
 
+  let count = 0;
+
   // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
   $("#espresso-menu-name").addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
@@ -34,6 +36,8 @@ function App() {
         "beforeend",
         menuItemTemplate($espressoMenuName)
       );
+      count++;
+      $(".menu-count").innerText = `총 ${count}개`;
 
       //console.log(menuItemTemplate($espressoMenuName));
     }
