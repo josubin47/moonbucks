@@ -32,10 +32,15 @@ function App() {
       "beforeend",
       menuItemTemplate($espressoMenuName)
     );
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
+
+    setMenuCount();
 
     $("#espresso-menu-name").value = "";
+  };
+
+  const setMenuCount = () => {
+    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    $(".menu-count").innerText = `총 ${menuCount}개`;
   };
 
   // form 태그 자동 전송 막기
@@ -66,10 +71,7 @@ function App() {
     if (e.target.classList.contains("menu-remove-button")) {
       if (confirm("정말 삭제하시겠습니까?" === true)) {
         e.target.closest("li").remove();
-        const menuCount = $("#espresso-menu-list").querySelectorAll(
-          "li"
-        ).length;
-        $(".menu-count").innerText = `총 ${menuCount}개`;
+        setMenuCount();
       }
     }
   });
