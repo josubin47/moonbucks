@@ -36,8 +36,11 @@ function App() {
         "beforeend",
         menuItemTemplate($espressoMenuName)
       );
+
+      // 총 메뉴 개수를 count하여 상단에 표시
       count++;
       $(".menu-count").innerText = `총 ${count}개`;
+      $("#espresso-menu-name").value = "";
 
       //console.log(menuItemTemplate($espressoMenuName));
     }
