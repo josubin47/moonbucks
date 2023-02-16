@@ -13,6 +13,11 @@ function App() {
     if (e.key === "Enter") {
       const $espressoMenuName = $("#espresso-menu-name").value;
 
+      if ($espressoMenuName === "") {
+        alert("값을 입력해주세요!");
+        return;
+      }
+
       //입력한 값을 메뉴 리스트에 추가
       const menuItemTemplate = (espressoMenuName) => {
         return `<li class="menu-list-item d-flex items-center py-2">
@@ -36,13 +41,11 @@ function App() {
         "beforeend",
         menuItemTemplate($espressoMenuName)
       );
-
-      // 총 메뉴 개수를 count하여 상단에 표시
       count++;
-      $(".menu-count").innerText = `총 ${count}개`;
-      $("#espresso-menu-name").value = "";
 
-      //console.log(menuItemTemplate($espressoMenuName));
+      $(".menu-count").innerText = `총 ${count}개`;
+
+      $("#espresso-menu-name").value = "";
     }
   });
 }
