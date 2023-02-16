@@ -1,26 +1,18 @@
 const $ = (selector) => document.querySelector(selector);
 
-function App() {
-  // form 태그 자동 전송 막기
-  $("#espresso-menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
-
+const addMenu = () => {
   let count = 0;
 
-  // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
-  $("#espresso-menu-name").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      const $espressoMenuName = $("#espresso-menu-name").value;
+  const $espressoMenuName = $("#espresso-menu-name").value;
 
-      if ($espressoMenuName === "") {
-        alert("값을 입력해주세요!");
-        return;
-      }
+  if ($espressoMenuName === "") {
+    alert("값을 입력해주세요!");
+    return;
+  }
 
-      //입력한 값을 메뉴 리스트에 추가
-      const menuItemTemplate = (espressoMenuName) => {
-        return `<li class="menu-list-item d-flex items-center py-2">
+  //입력한 값을 메뉴 리스트에 추가
+  const menuItemTemplate = (espressoMenuName) => {
+    return `<li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
         <button
           type="button"
@@ -35,17 +27,34 @@ function App() {
           삭제
         </button>
       </li>`;
-      };
+  };
 
-      $("#espresso-menu-list").insertAdjacentHTML(
-        "beforeend",
-        menuItemTemplate($espressoMenuName)
-      );
-      count++;
+  $("#espresso-menu-list").insertAdjacentHTML(
+    "beforeend",
+    menuItemTemplate($espressoMenuName)
+  );
+  count++;
 
-      $(".menu-count").innerText = `총 ${count}개`;
+  $(".menu-count").innerText = `총 ${count}개`;
 
-      $("#espresso-menu-name").value = "";
+  $("#espresso-menu-name").value = "";
+};
+
+function App() {
+  // form 태그 자동 전송 막기
+  $("#espresso-menu-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+  // 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
+  $("#espresso-menu-submit-button").addEventListener("click", () => {
+    addMenu();
+  });
+
+  // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
+  $("#espresso-menu-name").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      addMenu();
     }
   });
 }
