@@ -62,6 +62,16 @@ function App() {
       const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
       $menuName.innerText = newMenuName;
     }
+
+    if (e.target.classList.contains("menu-remove-button")) {
+      if (confirm("정말 삭제하시겠습니까?" === true)) {
+        e.target.closest("li").remove();
+        const menuCount = $("#espresso-menu-list").querySelectorAll(
+          "li"
+        ).length;
+        $(".menu-count").innerText = `총 ${menuCount}개`;
+      }
+    }
   });
 }
 
