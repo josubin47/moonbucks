@@ -2,7 +2,7 @@ const $ = (selector) => document.querySelector(selector);
 
 const store = {
   setLocalStorage(menu) {
-    localStorage.setItem(JSON.stringify(menu));
+    localStorage.setItem("menu", JSON.stringify(menu));
   },
   getLocalStorage() {
     localStorage.getItem("menu");
@@ -21,10 +21,12 @@ function App() {
     }
 
     this.menu.push({ name: espressoMenuName });
+    store.setLocalStorage(this.menu);
+
     const template = this.menu
-      .map((item) => {
-        return `<li class="menu-list-item d-flex items-center py-2">
-              <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
+      .map((menuItem, index) => {
+        return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
+              <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
               <button
                 type="button"
                 class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -49,13 +51,19 @@ function App() {
   };
 
   const updateMenu = (e) => {
+    const menuId = e.target.closest("li").dataset.menuId;
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    this.menu[menuId].name = newMenuName;
+    store.setLocalStorage(this.menu);
     $menuName.innerText = newMenuName;
   };
 
   const deleteMenu = (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
+      const menuId = e.target.closest("li").dataset.menuId;
+      this.menu.splice(menuId, 1);
+      store.setLocalStorage(this.menu);
       e.target.closest("li").remove();
       setMenuCount();
     }
