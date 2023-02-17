@@ -48,6 +48,19 @@ function App() {
     $("#espresso-menu-name").value = "";
   };
 
+  const updateMenu = (e) => {
+    const $menuName = e.target.closest("li").querySelector(".menu-name");
+    const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
+    $menuName.innerText = newMenuName;
+  };
+
+  const deleteMenu = (e) => {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      e.target.closest("li").remove();
+      setMenuCount();
+    }
+  };
+
   const setMenuCount = () => {
     const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount}개`;
@@ -70,19 +83,14 @@ function App() {
     }
   });
 
-  // 메뉴 수정
+  // 메뉴 수정, 삭제
   $("#espresso-menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
-      const $menuName = e.target.closest("li").querySelector(".menu-name");
-      const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
-      $menuName.innerText = newMenuName;
+      updateMenu(e);
     }
 
     if (e.target.classList.contains("menu-remove-button")) {
-      if (confirm("정말 삭제하시겠습니까?" === true)) {
-        e.target.closest("li").remove();
-        setMenuCount();
-      }
+      deleteMenu(e);
     }
   });
 }
