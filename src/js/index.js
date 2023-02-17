@@ -13,16 +13,17 @@ function App() {
   this.menu = [];
 
   const addMenu = () => {
-    const $espressoMenuName = $("#espresso-menu-name").value;
+    const espressoMenuName = $("#espresso-menu-name").value;
 
-    if ($espressoMenuName === "") {
+    if (espressoMenuName === "") {
       alert("값을 입력해주세요!");
       return;
     }
 
-    //입력한 값을 메뉴 리스트에 추가
-    const menuItemTemplate = (espressoMenuName) => {
-      return `<li class="menu-list-item d-flex items-center py-2">
+    this.menu.push({ name: espressoMenuName });
+    const template = this.menu
+      .map((item) => {
+        return `<li class="menu-list-item d-flex items-center py-2">
               <span class="w-100 pl-2 menu-name">${espressoMenuName}</span>
               <button
                 type="button"
@@ -37,12 +38,10 @@ function App() {
                 삭제
               </button>
             </li>`;
-    };
+      })
+      .join("");
 
-    $("#espresso-menu-list").insertAdjacentHTML(
-      "beforeend",
-      menuItemTemplate($espressoMenuName)
-    );
+    $("#espresso-menu-list").innerHTML = template;
 
     setMenuCount();
 
