@@ -1,6 +1,17 @@
 const $ = (selector) => document.querySelector(selector);
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem(JSON.stringify(menu));
+  },
+  getLocalStorage() {
+    localStorage.getItem("menu");
+  },
+};
+
 function App() {
+  this.menu = [];
+
   const addMenu = () => {
     const $espressoMenuName = $("#espresso-menu-name").value;
 
@@ -77,4 +88,4 @@ function App() {
   });
 }
 
-App();
+const app = new App();
