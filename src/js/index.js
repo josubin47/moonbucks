@@ -25,8 +25,8 @@ function App() {
       store.getLocalStorage() !== undefined
     ) {
       this.menu = store.getLocalStorage();
-      render();
     }
+    render();
   };
 
   // 메뉴 리스트 랜더링
@@ -51,12 +51,12 @@ function App() {
       })
       .join("");
 
-    $("#espresso-menu-list").innerHTML = template;
+    $("#menu-list").innerHTML = template;
     setMenuCount();
   };
 
   const addMenu = () => {
-    const espressoMenuName = $("#espresso-menu-name").value;
+    const espressoMenuName = $("#menu-name").value;
 
     if (espressoMenuName === "") {
       alert("값을 입력해주세요!");
@@ -68,7 +68,7 @@ function App() {
 
     render();
 
-    $("#espresso-menu-name").value = "";
+    $("#menu-name").value = "";
   };
 
   const updateMenu = (e) => {
@@ -91,29 +91,29 @@ function App() {
   };
 
   const setMenuCount = () => {
-    const menuCount = $("#espresso-menu-list").querySelectorAll("li").length;
+    const menuCount = $("#menu-list").querySelectorAll("li").length;
     $(".menu-count").innerText = `총 ${menuCount}개`;
   };
 
   // form 태그 자동 전송 막기
-  $("#espresso-menu-form").addEventListener("submit", (e) => {
+  $("#menu-form").addEventListener("submit", (e) => {
     e.preventDefault();
   });
 
   // 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
-  $("#espresso-menu-submit-button").addEventListener("click", () => {
+  $("#menu-submit-button").addEventListener("click", () => {
     addMenu();
   });
 
   // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
-  $("#espresso-menu-name").addEventListener("keypress", (e) => {
+  $("#menu-name").addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       addMenu();
     }
   });
 
   // 메뉴 수정, 삭제
-  $("#espresso-menu-list").addEventListener("click", (e) => {
+  $("#menu-list").addEventListener("click", (e) => {
     if (e.target.classList.contains("menu-edit-button")) {
       updateMenu(e);
     }
@@ -128,6 +128,9 @@ function App() {
     const isCategoryButton = e.target.classList.contains("cafe-category-name");
     if (isCategoryButton) {
       const categoryName = e.target.dataset.categoryName;
+      this.category = categoryName;
+      $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+      render();
     }
   });
 }
