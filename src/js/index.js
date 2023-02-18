@@ -3,6 +3,25 @@ import store from "./store/index.js";
 
 const BASE_URL = "http://localhost:3000/api";
 
+const api = {
+  async getMenuList(category) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+    return response.json();
+  },
+  async createMenu(category, name) {
+    const response = await fetch(`${BASE_URL}/category/${category}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    });
+    if (!response.ok) {
+      console.error("에러가 발생했습니다");
+    }
+  },
+};
+
 function App() {
   this.menu = {
     espresso: [],
@@ -12,20 +31,16 @@ function App() {
     dessert: [],
   };
   this.category = "espresso";
-  this.init = () => {
-    if (
-      store.getLocalStorage() !== null &&
-      store.getLocalStorage() !== "" &&
-      store.getLocalStorage() !== undefined
-    ) {
-      this.menu = store.getLocalStorage();
-    }
+  this.init = async () => {
+    this.menu[this.category] = await api.getMenuList(this.category);
     render();
     initEventListener();
   };
 
   // 메뉴 리스트 랜더링
-  const render = () => {
+  const render = async () => {
+    this.menu[this.category] = await api.getMenuList(this.category);
+
     const template = this.menu[this.category]
       .map((menuItem, index) => {
         return `<li data-menu-id="${index}" class="${
@@ -66,25 +81,10 @@ function App() {
       return;
     }
 
-    await fetch(`${BASE_URL}/category/${this.category}/menu`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: menuName }),
-    }).then((response) => {
-      return response.json();
-    });
+    await api.createMenu(this.category, menuName);
 
-    await fetch(`${BASE_URL}/category/${this.category}/menu`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        this.menu[this.category] = data;
-        render();
-        $("#menu-name").value = "";
-      });
+    render();
+    $("#menu-name").value = "";
   };
 
   const updateMenu = (e) => {
