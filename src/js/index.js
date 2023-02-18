@@ -27,6 +27,7 @@ function App() {
       this.menu = store.getLocalStorage();
     }
     render();
+    initEventListener();
   };
 
   // 메뉴 리스트 랜더링
@@ -85,7 +86,7 @@ function App() {
     const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
     this.menu[this.category][menuId].name = newMenuName;
     store.setLocalStorage(this.menu);
-    $menuName.innerText = newMenuName;
+    render();
   };
 
   const deleteMenu = (e) => {
@@ -93,8 +94,7 @@ function App() {
       const menuId = e.target.closest("li").dataset.menuId;
       this.menu[this.category].splice(menuId, 1);
       store.setLocalStorage(this.menu);
-      e.target.closest("li").remove();
-      setMenuCount();
+      render();
     }
   };
 
@@ -107,55 +107,57 @@ function App() {
   };
 
   const setMenuCount = () => {
-    const menuCount = $("#menu-list").querySelectorAll("li").length;
-    $(".menu-count").innerText = `총 ${menuCount}개`;
+    $(".menu-count").innerText = `총 ${this.menu[this.category].length}개`;
   };
 
-  // form 태그 자동 전송 막기
-  $("#menu-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-  });
+  const initEventListener = () => {
+    // form 태그 자동 전송 막기
+    $("#menu-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+    });
 
-  // 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
-  $("#menu-submit-button").addEventListener("click", () => {
-    addMenu();
-  });
-
-  // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
-  $("#menu-name").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
+    // 메뉴의 이름을 입력 받고 확인 버튼 클릭으로 추가한다.
+    $("#menu-submit-button").addEventListener("click", () => {
       addMenu();
-    }
-  });
+    });
 
-  // 메뉴 수정, 삭제, 품절 처리
-  $("#menu-list").addEventListener("click", (e) => {
-    if (e.target.classList.contains("menu-edit-button")) {
-      updateMenu(e);
-      return;
-    }
+    // 메뉴의 이름을 입력 받고 엔터키 입력으로 추가한다.
+    $("#menu-name").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        addMenu();
+      }
+    });
 
-    if (e.target.classList.contains("menu-remove-button")) {
-      deleteMenu(e);
-      return;
-    }
+    // 메뉴 수정, 삭제, 품절 처리
+    $("#menu-list").addEventListener("click", (e) => {
+      if (e.target.classList.contains("menu-edit-button")) {
+        updateMenu(e);
+        return;
+      }
 
-    if (e.target.classList.contains("menu-sold-out-button")) {
-      soldOutMenu(e);
-      return;
-    }
-  });
+      if (e.target.classList.contains("menu-remove-button")) {
+        deleteMenu(e);
+        return;
+      }
 
-  // 메뉴 종류 선택
-  $("nav").addEventListener("click", (e) => {
-    const isCategoryButton = e.target.classList.contains("cafe-category-name");
-    if (isCategoryButton) {
-      const categoryName = e.target.dataset.categoryName;
-      this.category = categoryName;
-      $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
-      render();
-    }
-  });
+      if (e.target.classList.contains("menu-sold-out-button")) {
+        soldOutMenu(e);
+        return;
+      }
+    });
+
+    // 메뉴 종류 선택
+    $("nav").addEventListener("click", (e) => {
+      const isCategoryButton =
+        e.target.classList.contains("cafe-category-name");
+      if (isCategoryButton) {
+        const categoryName = e.target.dataset.categoryName;
+        this.category = categoryName;
+        $("#category-title").innerText = `${e.target.innerText} 메뉴 관리`;
+        render();
+      }
+    });
+  };
 }
 
 const app = new App();
