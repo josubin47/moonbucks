@@ -10,21 +10,28 @@ const store = {
 };
 
 function App() {
-  this.menu = [];
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    dessert: [],
+  };
+  this.category = "espresso";
   this.init = () => {
     if (
-      store.getLocalStorage() !== null ||
-      store.getLocalStorage() !== "" ||
+      store.getLocalStorage() !== null &&
+      store.getLocalStorage() !== "" &&
       store.getLocalStorage() !== undefined
     ) {
       this.menu = store.getLocalStorage();
-      console.log(this.menu);
+      render();
     }
-    render();
   };
 
+  // 메뉴 리스트 랜더링
   const render = () => {
-    const template = this.menu
+    const template = this.menu[this.category]
       .map((menuItem, index) => {
         return `<li data-menu-id="${index}" class="menu-list-item d-flex items-center py-2">
               <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
@@ -56,7 +63,7 @@ function App() {
       return;
     }
 
-    this.menu.push({ name: espressoMenuName });
+    this.menu[this.category].push({ name: espressoMenuName });
     store.setLocalStorage(this.menu);
 
     render();
@@ -113,6 +120,14 @@ function App() {
 
     if (e.target.classList.contains("menu-remove-button")) {
       deleteMenu(e);
+    }
+  });
+
+  // 메뉴 종류 선택
+  $("nav").addEventListener("click", (e) => {
+    const isCategoryButton = e.target.classList.contains("cafe-category-name");
+    if (isCategoryButton) {
+      const categoryName = e.target.dataset.categoryName;
     }
   });
 }
