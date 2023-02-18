@@ -60,6 +60,16 @@ function App() {
       return;
     }
 
+    const isDuplicatedItem = this.menu[this.category].some(
+      (menuItem) => menuItem.name === menuName
+    );
+
+    if (isDuplicatedItem) {
+      alert("이미 등록된 메뉴입니다.");
+      $("#menu-name").value = "";
+      return;
+    }
+
     await api.createMenu(this.category, menuName);
 
     render();
