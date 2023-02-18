@@ -1,5 +1,7 @@
 import { $ } from "./utils/dom.js";
-import store from ".store/index.js";
+import store from "./store/index.js";
+
+const BASE_URL = "http://localhost:3000/api";
 
 function App() {
   this.menu = {
@@ -56,20 +58,33 @@ function App() {
     setMenuCount();
   };
 
-  const addMenu = () => {
-    const espressoMenuName = $("#menu-name").value;
+  const addMenu = async () => {
+    const menuName = $("#menu-name").value;
 
-    if (espressoMenuName === "") {
+    if (menuName === "") {
       alert("값을 입력해주세요!");
       return;
     }
 
-    this.menu[this.category].push({ name: espressoMenuName });
-    store.setLocalStorage(this.menu);
+    await fetch(`${BASE_URL}/category/${this.category}/menu`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: menuName }),
+    }).then((response) => {
+      return response.json();
+    });
 
-    render();
-
-    $("#menu-name").value = "";
+    await fetch(`${BASE_URL}/category/${this.category}/menu`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        this.menu[this.category] = data;
+        render();
+        $("#menu-name").value = "";
+      });
   };
 
   const updateMenu = (e) => {
