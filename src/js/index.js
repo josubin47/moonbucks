@@ -6,6 +6,7 @@ const BASE_URL = "http://localhost:3000/api";
 const api = {
   async getMenuList(category) {
     const response = await fetch(`${BASE_URL}/category/${category}/menu`);
+    console.log(response);
     return response.json();
   },
   async createMenu(category, name) {
@@ -20,6 +21,50 @@ const api = {
       console.error("에러가 발생했습니다");
     }
   },
+  async updateMenu(category, menuId, name) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      }
+    );
+    if (!response.ok) {
+      console.error("에러가 발생했습니다");
+    }
+    return response.json();
+  },
+  async toggleSoldOutMenu(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}/soldout`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      console.error("에러가 발생했습니다");
+    }
+  },
+  async deleteMenu(category, menuId) {
+    const response = await fetch(
+      `${BASE_URL}/category/${category}/menu/${menuId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      console.error("에러가 발생했습니다");
+    }
+  },
 };
 
 function App() {
@@ -28,7 +73,7 @@ function App() {
     frappuccino: [],
     blended: [],
     teavana: [],
-    dessert: [],
+    desert: [],
   };
   this.category = "espresso";
   this.init = async () => {
@@ -42,9 +87,9 @@ function App() {
     this.menu[this.category] = await api.getMenuList(this.category);
 
     const template = this.menu[this.category]
-      .map((menuItem, index) => {
-        return `<li data-menu-id="${index}" class="${
-          menuItem.soldOut ? "sold-out" : ""
+      .map((menuItem) => {
+        return `<li data-menu-id="${menuItem.id}" class="${
+          menuItem.isSoldOut ? "sold-out" : ""
         } menu-list-item d-flex items-center py-2">
               <span class="w-100 pl-2 menu-name">${menuItem.name}</span>
               <button
@@ -87,29 +132,26 @@ function App() {
     $("#menu-name").value = "";
   };
 
-  const updateMenu = (e) => {
+  const updateMenu = async (e) => {
     const menuId = e.target.closest("li").dataset.menuId;
     const $menuName = e.target.closest("li").querySelector(".menu-name");
     const newMenuName = prompt("메뉴명을 수정하세요", $menuName.innerText);
-    this.menu[this.category][menuId].name = newMenuName;
-    store.setLocalStorage(this.menu);
+
+    await api.updateMenu(this.category, menuId, newMenuName);
     render();
   };
 
-  const deleteMenu = (e) => {
+  const deleteMenu = async (e) => {
     if (confirm("정말 삭제하시겠습니까?")) {
       const menuId = e.target.closest("li").dataset.menuId;
-      this.menu[this.category].splice(menuId, 1);
-      store.setLocalStorage(this.menu);
+      await api.deleteMenu(this.category, menuId);
       render();
     }
   };
 
-  const soldOutMenu = (e) => {
+  const soldOutMenu = async (e) => {
     const menuId = e.target.closest("li").dataset.menuId;
-    this.menu[this.category][menuId].soldOut =
-      !this.menu[this.category][menuId].soldOut;
-    store.setLocalStorage(this.menu);
+    await api.toggleSoldOutMenu(this.category, menuId);
     render();
   };
 
